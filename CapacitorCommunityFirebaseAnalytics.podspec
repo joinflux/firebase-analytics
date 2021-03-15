@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
     s.license = package['license']
     s.homepage = package['homepage']
     s.author = package['author']
-    s.source = { :git => 'https://github.com/capacitor-community/firebase-analytics', :tag => s.version.to_s }
+    s.source = { :git => 'https://github.com/joinflux/firebase-analytics', :tag => s.version.to_s }
     s.source_files = 'ios/Plugin/**/*.{swift,h,m,c,cc,mm,cpp}'
     s.ios.deployment_target  = '11.0'
     s.static_framework = true

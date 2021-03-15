@@ -1,17 +1,17 @@
 <p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
 <h3 align="center">Firebase Analytics</h3>
-<p align="center"><strong><code>@capacitor-community/firebase-analytics</code></strong></p>
+<p align="center"><strong><code>@joinflux/firebase-analytics</code></strong></p>
 <p align="center">
   Capacitor community plugin for native <a href="https://firebase.google.com/docs/analytics">Firebase Analytics</a>.
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/maintenance/yes/2020?style=flat-square" />
-  <a href="https://github.com/capacitor-community/firebase-analytics/actions?query=workflow%3A%22Test+and+Build+Plugin%22"><img src="https://img.shields.io/github/workflow/status/capacitor-community/firebase-analytics/Test%20and%20Build%20Plugin?style=flat-square" /></a>
-  <a href="https://www.npmjs.com/package/@capacitor-community/firebase-analytics"><img src="https://img.shields.io/npm/l/@capacitor-community/firebase-analytics?style=flat-square" /></a>
+  <a href="https://github.com/joinflux/firebase-analytics/actions?query=workflow%3A%22Test+and+Build+Plugin%22"><img src="https://img.shields.io/github/workflow/status/joinflux/firebase-analytics/Test%20and%20Build%20Plugin?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/@joinflux/firebase-analytics"><img src="https://img.shields.io/npm/l/@joinflux/firebase-analytics?style=flat-square" /></a>
 <br>
-  <a href="https://www.npmjs.com/package/@capacitor-community/firebase-analytics"><img src="https://img.shields.io/npm/dw/@capacitor-community/firebase-analytics?style=flat-square" /></a>
-  <a href="https://www.npmjs.com/package/@capacitor-community/firebase-analytics"><img src="https://img.shields.io/npm/v/@capacitor-community/firebase-analytics?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/@joinflux/firebase-analytics"><img src="https://img.shields.io/npm/dw/@joinflux/firebase-analytics?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/@joinflux/firebase-analytics"><img src="https://img.shields.io/npm/v/@joinflux/firebase-analytics?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 <a href="#contributors-"><img src="https://img.shields.io/badge/all%20contributors-3-orange?style=flat-square" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -31,13 +31,13 @@ Maintenance Status: Actively Maintained
 Using npm:
 
 ```bash
-npm install @capacitor-community/firebase-analytics
+npm install @joinflux/firebase-analytics
 ```
 
 Using yarn:
 
 ```bash
-yarn add @capacitor-community/firebase-analytics
+yarn add @joinflux/firebase-analytics
 ```
 
 Sync native files:
@@ -109,7 +109,7 @@ git checkout -b firebase-analytics
 
 ```typescript
 // Must import the package once to make sure the web support initializes
-import "@capacitor-community/firebase-analytics";
+import "@joinflux/firebase-analytics";
 
 import { Plugins } from "@capacitor/core";
 
@@ -257,7 +257,7 @@ Download the `google-services.json` file and copy it to `android/app/` directory
 
 - `ionic start my-cap-app --capacitor`
 - `cd my-cap-app`
-- `npm install --save @capacitor-community/firebase-analytics`
+- `npm install --save @joinflux/firebase-analytics`
 - `mkdir www && touch www/index.html`
 - `sudo gem install cocoapods` (only once)
 - `npx cap add ios`
@@ -279,7 +279,7 @@ Download the `google-services.json` file and copy it to `android/app/` directory
 
 - `ionic start my-cap-app --capacitor`
 - `cd my-cap-app`
-- `npm install --save @capacitor-community/firebase-analytics`
+- `npm install --save @joinflux/firebase-analytics`
 - `mkdir www && touch www/index.html`
 - `npx cap add android`
 - `npx cap sync android` (every time you run `npm install`)
@@ -303,7 +303,7 @@ For existing projects you can upgrade all capacitor related packages (including 
 
 If you were previously using the `capacitor-analytics` package from npm
 
-1. rename dep in package.json from `capacitor-analytics` to `@capacitor-community/firebase-analytics`
+1. rename dep in package.json from `capacitor-analytics` to `@joinflux/firebase-analytics`
 2. on android's _MainActivity.java_ change the import path from `io.stewan.capacitor.analytics.AnalyticsPlugin;` to `com.getcapacitor.community.firebaseanalytics.FirebaseAnalytics;`
 3. public api changes
    - `instance()` is now `getAppInstanceId()`
