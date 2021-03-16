@@ -4,6 +4,8 @@ import { FirebaseAnalyticsPlugin, FirebaseInitOptions } from "./definitions";
 
 declare var window: any;
 
+const FIREBASE_VERSION = "8.3.0";
+
 export class FirebaseAnalyticsWeb extends WebPlugin
   implements FirebaseAnalyticsPlugin {
   private not_supported_mssg = "This method is not supported";
@@ -18,11 +20,11 @@ export class FirebaseAnalyticsWeb extends WebPlugin
   private scripts = [
     {
       key: "firebase-app",
-      src: "https://www.gstatic.com/firebasejs/7.15.4/firebase-app.js",
+      src: `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/firebase-app.js`,
     },
     {
       key: "firebase-ac",
-      src: "https://www.gstatic.com/firebasejs/7.15.4/firebase-analytics.js",
+      src: `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/firebase-analytics.js`,
     },
   ];
 
@@ -31,7 +33,7 @@ export class FirebaseAnalyticsWeb extends WebPlugin
       name: "FirebaseAnalytics",
       platforms: ["web"],
     });
-    
+
     this.ready = new Promise((resolve) => (this.readyResolver = resolve));
     this.loadScripts();
   }
@@ -221,11 +223,11 @@ export class FirebaseAnalyticsWeb extends WebPlugin
       resolve();
     });
   }
-  
-  // 
+
+  //
   // Note: The methods below are common to all Firebase capacitor plugins. Best to create `capacitor-community / firebase-common`,
   // move the code there and add it as module to all FB plugins.
-  // 
+  //
 
   /**
    * Configure and Initialize FirebaseApp if not present
@@ -234,11 +236,12 @@ export class FirebaseAnalyticsWeb extends WebPlugin
    * Platform: Web
    */
   async initializeFirebase(options: FirebaseInitOptions): Promise<any> {
-    if (!options) 
-      throw new Error(this.options_missing_mssg);
+    if (!options) throw new Error(this.options_missing_mssg);
 
     await this.firebaseObjectReadyPromise();
-    const app = this.isFirebaseInitialized() ? window.firebase : window.firebase.initializeApp(options);
+    const app = this.isFirebaseInitialized()
+      ? window.firebase
+      : window.firebase.initializeApp(options);
     this.analyticsRef = app.analytics();
     this.readyResolver();
     return this.analyticsRef;
@@ -248,7 +251,7 @@ export class FirebaseAnalyticsWeb extends WebPlugin
    * Check for existing loaded script and load new scripts
    */
   private loadScripts(): Promise<Array<any>> {
-    return Promise.all( this.scripts.map( s => this.loadScript(s.key, s.src) ) );
+    return Promise.all(this.scripts.map((s) => this.loadScript(s.key, s.src)));
   }
 
   /**
@@ -258,7 +261,7 @@ export class FirebaseAnalyticsWeb extends WebPlugin
    */
   private loadScript(id: string, src: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (document.getElementById(id)){
+      if (document.getElementById(id)) {
         resolve(null);
       } else {
         const file = document.createElement("script");
@@ -267,7 +270,7 @@ export class FirebaseAnalyticsWeb extends WebPlugin
         file.id = id;
         file.onload = resolve;
         file.onerror = reject;
-        document.querySelector("head").appendChild(file);  
+        document.querySelector("head").appendChild(file);
       }
     });
   }
@@ -278,12 +281,12 @@ export class FirebaseAnalyticsWeb extends WebPlugin
       const interval = setInterval(() => {
         if (window.firebase?.analytics) {
           clearInterval(interval);
-          resolve( null );
+          resolve(null);
         } else if (tries-- <= 0) {
           reject("Firebase fails to load");
         }
       }, 50);
-    } );
+    });
   }
 
   private isFirebaseInitialized() {
