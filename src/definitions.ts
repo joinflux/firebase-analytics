@@ -16,7 +16,6 @@ export interface FirebaseAnalyticsPlugin {
   reset(): Promise<void>;
   logEvent(options: { name: string; params: object }): Promise<void>;
   setCollectionEnabled(options: { enabled: boolean }): Promise<void>;
-  setSessionTimeoutDuration(options: { duration: number }): Promise<void>;
   enable(): Promise<void>;
   disable(): Promise<void>;
 }

@@ -4,15 +4,17 @@ import { FirebaseAnalyticsPlugin, FirebaseInitOptions } from "./definitions";
 
 declare var window: any;
 
+// Errors
+const ErrFirebaseAnalyticsMissing = new Error(
+  "Firebase analytics is not initialized. Make sure initializeFirebase() is called once"
+);
+const ErrOptionsMissing = new Error("Firebase options are missing");
+
+// Firebase Library Version
 const FIREBASE_VERSION = "8.3.0";
 
 export class FirebaseAnalyticsWeb extends WebPlugin
   implements FirebaseAnalyticsPlugin {
-  private not_supported_mssg = "This method is not supported";
-  private options_missing_mssg = "Firebase options are missing";
-  private analytics_missing_mssg =
-    "Firebase analytics is not initialized. Make sure initializeFirebase() is called once";
-
   public readonly ready: Promise<any>;
   private readyResolver: Function;
   private analyticsRef: any;
@@ -43,25 +45,14 @@ export class FirebaseAnalyticsWeb extends WebPlugin
    * @param options - userId: unique identifier of the user to log
    * Platform: Web/Android/iOS
    */
-  setUserId(options: { userId: string }): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      await this.ready;
+  async setUserId(options: { userId: string }): Promise<void> {
+    await this.ready;
 
-      if (!this.analyticsRef) {
-        reject(this.analytics_missing_mssg);
-        return;
-      }
+    if (!this.analyticsRef) throw ErrFirebaseAnalyticsMissing;
+    if (!options?.userId) throw new Error("userId property is missing");
 
-      const { userId } = options || { userId: undefined };
-
-      if (!userId) {
-        reject("userId property is missing");
-        return;
-      }
-
-      this.analyticsRef.setUserId(userId);
-      resolve();
-    });
+    this.analyticsRef.setUserId(options.userId);
+    return;
   }
 
   /**
@@ -70,32 +61,24 @@ export class FirebaseAnalyticsWeb extends WebPlugin
    *                  value: The value of the user property.
    * Platform: Web/Android/iOS
    */
-  setUserProperty(options: { name: string; value: string }): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      await this.ready;
+  async setUserProperty(options: {
+    name: string;
+    value: string;
+  }): Promise<void> {
+    await this.ready;
 
-      if (!this.analyticsRef) {
-        reject(this.analytics_missing_mssg);
-        return;
-      }
+    if (!this.analyticsRef) throw ErrFirebaseAnalyticsMissing;
 
-      const { name, value } = options || { name: undefined, value: undefined };
+    const { name, value } = options || { name: undefined, value: undefined };
 
-      if (!name) {
-        reject("name property is missing");
-        return;
-      }
+    if (!name) throw new Error("name property is missing");
 
-      if (!value) {
-        reject("value property is missing");
-        return;
-      }
+    if (!value) throw new Error("value property is missing");
 
-      let property: any = {};
-      property[name] = value;
-      this.analyticsRef.setUserProperties(property);
-      resolve();
-    });
+    let property: any = {};
+    property[name] = value;
+    this.analyticsRef.setUserProperties(property);
+    return;
   }
 
   /**
@@ -134,28 +117,20 @@ export class FirebaseAnalyticsWeb extends WebPlugin
    *                  params: the map of event parameters.
    * Platform: Web/Android/iOS
    */
-  logEvent(options: { name: string; params: object }): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      await this.ready;
+  async logEvent(options: { name: string; params: object }): Promise<void> {
+    await this.ready;
 
-      if (!this.analyticsRef) {
-        reject(this.analytics_missing_mssg);
-        return;
-      }
+    if (!this.analyticsRef) throw ErrFirebaseAnalyticsMissing;
 
-      const { name, params } = options || {
-        name: undefined,
-        params: undefined,
-      };
+    const { name, params } = options || {
+      name: undefined,
+      params: undefined,
+    };
 
-      if (!name) {
-        reject("name property is missing");
-        return;
-      }
+    if (!name) throw new Error("name property is missing");
 
-      this.analyticsRef.logEvent(name, params);
-      resolve();
-    });
+    this.analyticsRef.logEvent(name, params);
+    return;
   }
 
   /**
@@ -163,30 +138,14 @@ export class FirebaseAnalyticsWeb extends WebPlugin
    * @param options - enabled: boolean true/false to enable/disable logging
    * Platform: Web/Android/iOS
    */
-  setCollectionEnabled(options: { enabled: boolean }): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      await this.ready;
+  async setCollectionEnabled(options: { enabled: boolean }): Promise<void> {
+    await this.ready;
 
-      if (!this.analyticsRef) {
-        reject(this.analytics_missing_mssg);
-        return;
-      }
+    if (!this.analyticsRef) throw ErrFirebaseAnalyticsMissing;
 
-      const { enabled } = options || { enabled: false };
-      this.analyticsRef.setAnalyticsCollectionEnabled(enabled);
-      resolve();
-    });
-  }
-
-  /**
-   * Sets the duration of inactivity that terminates the current session.
-   * @param options - duration: duration of inactivity
-   * Platform: Android/iOS
-   */
-  setSessionTimeoutDuration(_options: { duration: number }): Promise<void> {
-    return new Promise((_resolve, reject) => {
-      reject(this.not_supported_mssg);
-    });
+    const { enabled = false } = options;
+    this.analyticsRef.setAnalyticsCollectionEnabled(enabled);
+    return;
   }
 
   /**
@@ -196,38 +155,23 @@ export class FirebaseAnalyticsWeb extends WebPlugin
     return this.analyticsRef;
   }
 
-  enable(): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      await this.ready;
+  async enable(): Promise<void> {
+    await this.ready;
 
-      if (!this.analyticsRef) {
-        reject(this.analytics_missing_mssg);
-        return;
-      }
+    if (!this.analyticsRef) throw ErrFirebaseAnalyticsMissing;
 
-      this.analyticsRef.setAnalyticsCollectionEnabled(true);
-      resolve();
-    });
+    this.analyticsRef.setAnalyticsCollectionEnabled(true);
+    return;
   }
 
-  disable(): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      await this.ready;
+  async disable(): Promise<void> {
+    await this.ready;
 
-      if (!this.analyticsRef) {
-        reject(this.analytics_missing_mssg);
-        return;
-      }
+    if (!this.analyticsRef) throw ErrFirebaseAnalyticsMissing;
 
-      this.analyticsRef.setAnalyticsCollectionEnabled(false);
-      resolve();
-    });
+    this.analyticsRef.setAnalyticsCollectionEnabled(false);
+    return;
   }
-
-  //
-  // Note: The methods below are common to all Firebase capacitor plugins. Best to create `capacitor-community / firebase-common`,
-  // move the code there and add it as module to all FB plugins.
-  //
 
   /**
    * Configure and Initialize FirebaseApp if not present
@@ -236,7 +180,7 @@ export class FirebaseAnalyticsWeb extends WebPlugin
    * Platform: Web
    */
   async initializeFirebase(options: FirebaseInitOptions): Promise<any> {
-    if (!options) throw new Error(this.options_missing_mssg);
+    if (!options) throw ErrOptionsMissing;
 
     await this.firebaseObjectReadyPromise();
     const app = this.isFirebaseInitialized()
