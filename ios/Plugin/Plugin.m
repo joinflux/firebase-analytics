@@ -10,6 +10,7 @@ CAP_PLUGIN(FirebaseAnalytics, "FirebaseAnalytics",
            CAP_PLUGIN_METHOD(logEvent, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(setCollectionEnabled, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(setSessionTimeoutDuration, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(initializeFirebase, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(enable, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(disable, CAPPluginReturnPromise);
 )

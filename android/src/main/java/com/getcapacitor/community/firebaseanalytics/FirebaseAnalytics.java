@@ -297,4 +297,15 @@ public class FirebaseAnalytics extends Plugin {
     mFirebaseAnalytics.setSessionTimeoutDuration(duration);
     call.success();
   }
+
+  /**
+   * Does nothing in Android as initialization happens automatically on load.
+   * This method is only here to maintain a consistent API accross all
+   * platforms.
+   * @param call: options - duration: duration of inactivity
+   */
+  @PluginMethod
+  public void initializeFirebase(PluginCall call) {
+    call.success();
+  }
 }
