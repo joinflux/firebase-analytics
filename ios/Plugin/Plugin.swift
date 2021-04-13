@@ -120,15 +120,6 @@ public class FirebaseAnalytics: CAPPlugin {
         Analytics.setSessionTimeoutInterval(TimeInterval(duration))
     }
 
-
-    // initializeFirebase does nothing in iOS as initialization happens
-    // automatically. The method is still available to maintain a consistent
-    // api accross all platforms.
-    @objc func initializeFirebase(_ call: CAPPluginCall) {
-        print("FirebaseAnalytics: initializeFirebase noop")
-        call.success()
-    }
-
     /// Deprecated - use setCollectionEnabled instead
     /// Enable analytics collection for this app on this device.
     /// - Parameter call
