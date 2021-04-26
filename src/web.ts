@@ -12,10 +12,10 @@ export class FirebaseAnalyticsWeb extends WebPlugin
       name: "FirebaseAnalytics",
       platforms: ["web"],
     });
+  }
 
-    if (!firebase.app())
-      throw new Error("missing firebase app, plase initialize firebase first");
-    this.analyticsRef = firebase.analytics();
+  async initializeFirebase(app: firebase.app.App) {
+    this.analyticsRef = app.analytics();
   }
 
   /**

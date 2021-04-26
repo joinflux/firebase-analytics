@@ -35,6 +35,19 @@ public class FirebaseAnalytics extends Plugin {
   }
 
   /**
+   * Initializes the firebase app.
+   * @param call: dismissed
+   *
+   * @web only.
+   *
+   * This is a helper method to provide common APIs accross platforms.
+   */
+  @PluginMethod
+  public void initializeFirebase(PluginCall call) {
+    call.success();
+  }
+
+  /**
    * Sets the user ID property.
    * @param call - userId: unique identifier of the user to log
    */

@@ -1,3 +1,5 @@
+import firebase from "firebase";
+
 declare module "@capacitor/core" {
   interface PluginRegistry {
     FirebaseAnalytics: FirebaseAnalyticsPlugin;
@@ -5,6 +7,7 @@ declare module "@capacitor/core" {
 }
 
 export interface FirebaseAnalyticsPlugin {
+  initializeFirebase(app: firebase.app.App): Promise<void>;
   setUserId(options: { userId: string }): Promise<void>;
   setUserProperty(options: { name: string; value: string }): Promise<void>;
   getAppInstanceId(): Promise<{ instanceId: string }>;

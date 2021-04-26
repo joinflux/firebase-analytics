@@ -14,6 +14,15 @@ public class FirebaseAnalytics: CAPPlugin {
     }
     
     
+    /// Initializes the firebase app. 
+    /// Param call: dismissed
+    ///
+    /// @web only. 
+    /// This is a helper method to provide common APIs accross platforms.
+    @objc func initializeFirebase(_ call: CAPPluginCall) {
+        call.success()
+    }
+    
     /// Sets the user ID property.
     /// - Parameter call: userId - unique identifier of the user to log
     @objc func setUserId(_ call: CAPPluginCall) {
