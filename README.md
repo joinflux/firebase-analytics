@@ -102,6 +102,12 @@ import "@joinflux/firebase-analytics";
 import { Plugins } from "@capacitor/core";
 
 const { FirebaseAnalytics } = Plugins;
+import { app } from "./utils/firebase";
+
+/**
+ * This must be done to start the plugin.
+ */
+FirebaseAnalytics.initializeFirebase(app);
 
 /**
  * Platform: Web/Android/iOS
