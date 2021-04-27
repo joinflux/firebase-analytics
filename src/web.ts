@@ -110,13 +110,6 @@ export class FirebaseAnalyticsWeb extends WebPlugin
     return;
   }
 
-  /**
-   * Returns analytics reference object
-   */
-  get remoteConfig() {
-    return this.analyticsRef;
-  }
-
   async enable(): Promise<void> {
     this.analyticsRef.setAnalyticsCollectionEnabled(true);
     return;
