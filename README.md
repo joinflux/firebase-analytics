@@ -19,10 +19,9 @@
 
 ## Maintainers
 
-| Maintainer    | GitHub                                      | Social                                           |
-| ------------- | ------------------------------------------- | ------------------------------------------------ |
-| Priyank Patel | [priyankpat](https://github.com/priyankpat) | [@priyankpat\_](https://twitter.com/priyankpat_) |
-| Stewan Silva  | [stewwan](https://github.com/stewwan)       | [@StewanSilva](https://twitter.com/StewanSilva)  |
+| Maintainer      | GitHub                                |
+| --------------- | ------------------------------------- |
+| Gustavo Horisch | [gugahoi](https://github.com/gugahoi) |
 
 Maintenance Status: Actively Maintained
 
@@ -79,17 +78,6 @@ public class MainActivity extends BridgeActivity {
 
 No configuration is required for this plugin.
 
-## Examples
-
-[Click here](https://github.com/priyankpat/capacitor-plugins-example/tree/firebase-analytics) for an example on how to implement this plugin.
-
-You can also clone the repository:
-
-```bash
-git clone https://github.com/priyankpat/capacitor-plugins-example
-git checkout -b firebase-analytics
-```
-
 ## Supported methods
 
 | Name                      | Android | iOS | Web |
@@ -114,22 +102,12 @@ import "@joinflux/firebase-analytics";
 import { Plugins } from "@capacitor/core";
 
 const { FirebaseAnalytics } = Plugins;
+import { app } from "./utils/firebase";
 
 /**
- * Platform: Web
- * Configure and initialize the firebase app.
- * @param options - firebase web app configuration options
- * */
-FirebaseAnalytics.initializeFirebase({
-  apiKey: "...",
-  authDomain: "...",
-  databaseURL: "...",
-  projectId: "...",
-  storageBucket: "...",
-  messagingSenderId: "...",
-  appId: "...",
-  measurementId: "...",
-});
+ * This must be done to start the plugin.
+ */
+FirebaseAnalytics.initializeFirebase(app);
 
 /**
  * Platform: Web/Android/iOS

@@ -1,43 +1,21 @@
-import { WebPlugin } from "@capacitor/core";
-
-import { FirebaseAnalyticsPlugin, FirebaseInitOptions } from "./definitions";
-
-declare var window: any;
-
-// Errors
-const ErrFirebaseAnalyticsMissing = new Error(
-  "Firebase analytics is not initialized. Make sure initializeFirebase() is called once"
-);
-const ErrOptionsMissing = new Error("Firebase options are missing");
-
-// Firebase Library Version
-const FIREBASE_VERSION = "8.3.0";
+import { registerWebPlugin, WebPlugin } from "@capacitor/core";
+import firebase from "firebase";
+import "firebase/analytics";
+import { FirebaseAnalyticsPlugin } from "./definitions";
 
 export class FirebaseAnalyticsWeb extends WebPlugin
   implements FirebaseAnalyticsPlugin {
-  public readonly ready: Promise<any>;
-  private readyResolver: Function;
-  private analyticsRef: any;
-
-  private scripts = [
-    {
-      key: "firebase-app",
-      src: `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/firebase-app.js`,
-    },
-    {
-      key: "firebase-ac",
-      src: `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/firebase-analytics.js`,
-    },
-  ];
+  private analyticsRef: firebase.analytics.Analytics;
 
   constructor() {
     super({
       name: "FirebaseAnalytics",
       platforms: ["web"],
     });
+  }
 
-    this.ready = new Promise((resolve) => (this.readyResolver = resolve));
-    this.loadScripts();
+  async initializeFirebase(app: firebase.app.App) {
+    this.analyticsRef = app.analytics();
   }
 
   /**
@@ -46,9 +24,6 @@ export class FirebaseAnalyticsWeb extends WebPlugin
    * Platform: Web/Android/iOS
    */
   async setUserId(options: { userId: string }): Promise<void> {
-    await this.ready;
-
-    if (!this.analyticsRef) throw ErrFirebaseAnalyticsMissing;
     if (!options?.userId) throw new Error("userId property is missing");
 
     this.analyticsRef.setUserId(options.userId);
@@ -65,14 +40,9 @@ export class FirebaseAnalyticsWeb extends WebPlugin
     name: string;
     value: string;
   }): Promise<void> {
-    await this.ready;
-
-    if (!this.analyticsRef) throw ErrFirebaseAnalyticsMissing;
-
     const { name, value } = options || { name: undefined, value: undefined };
 
     if (!name) throw new Error("name property is missing");
-
     if (!value) throw new Error("value property is missing");
 
     let property: any = {};
@@ -118,10 +88,6 @@ export class FirebaseAnalyticsWeb extends WebPlugin
    * Platform: Web/Android/iOS
    */
   async logEvent(options: { name: string; params: object }): Promise<void> {
-    await this.ready;
-
-    if (!this.analyticsRef) throw ErrFirebaseAnalyticsMissing;
-
     const { name, params } = options || {
       name: undefined,
       params: undefined,
@@ -139,103 +105,19 @@ export class FirebaseAnalyticsWeb extends WebPlugin
    * Platform: Web/Android/iOS
    */
   async setCollectionEnabled(options: { enabled: boolean }): Promise<void> {
-    await this.ready;
-
-    if (!this.analyticsRef) throw ErrFirebaseAnalyticsMissing;
-
     const { enabled = false } = options;
     this.analyticsRef.setAnalyticsCollectionEnabled(enabled);
     return;
   }
 
-  /**
-   * Returns analytics reference object
-   */
-  get remoteConfig() {
-    return this.analyticsRef;
-  }
-
   async enable(): Promise<void> {
-    await this.ready;
-
-    if (!this.analyticsRef) throw ErrFirebaseAnalyticsMissing;
-
     this.analyticsRef.setAnalyticsCollectionEnabled(true);
     return;
   }
 
   async disable(): Promise<void> {
-    await this.ready;
-
-    if (!this.analyticsRef) throw ErrFirebaseAnalyticsMissing;
-
     this.analyticsRef.setAnalyticsCollectionEnabled(false);
     return;
-  }
-
-  /**
-   * Configure and Initialize FirebaseApp if not present
-   * @param options - web app's Firebase configuration
-   * @returns firebase analytics object reference
-   * Platform: Web
-   */
-  async initializeFirebase(options: FirebaseInitOptions): Promise<any> {
-    if (!options) throw ErrOptionsMissing;
-
-    await this.firebaseObjectReadyPromise();
-    const app = this.isFirebaseInitialized()
-      ? window.firebase
-      : window.firebase.initializeApp(options);
-    this.analyticsRef = app.analytics();
-    this.readyResolver();
-    return this.analyticsRef;
-  }
-
-  /**
-   * Check for existing loaded script and load new scripts
-   */
-  private loadScripts(): Promise<Array<any>> {
-    return Promise.all(this.scripts.map((s) => this.loadScript(s.key, s.src)));
-  }
-
-  /**
-   * Loaded single script with provided id and source
-   * @param id - unique identifier of the script
-   * @param src - source of the script
-   */
-  private loadScript(id: string, src: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (document.getElementById(id)) {
-        resolve(null);
-      } else {
-        const file = document.createElement("script");
-        file.type = "text/javascript";
-        file.src = src;
-        file.id = id;
-        file.onload = resolve;
-        file.onerror = reject;
-        document.querySelector("head").appendChild(file);
-      }
-    });
-  }
-
-  private firebaseObjectReadyPromise(): Promise<void> {
-    var tries = 100;
-    return new Promise((resolve, reject) => {
-      const interval = setInterval(() => {
-        if (window.firebase?.analytics) {
-          clearInterval(interval);
-          resolve(null);
-        } else if (tries-- <= 0) {
-          reject("Firebase fails to load");
-        }
-      }, 50);
-    });
-  }
-
-  private isFirebaseInitialized() {
-    const length = window.firebase?.apps?.length;
-    return length && length > 0;
   }
 }
 
@@ -243,5 +125,4 @@ const FirebaseAnalytics = new FirebaseAnalyticsWeb();
 
 export { FirebaseAnalytics };
 
-import { registerWebPlugin } from "@capacitor/core";
 registerWebPlugin(FirebaseAnalytics);

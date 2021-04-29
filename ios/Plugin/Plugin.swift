@@ -14,6 +14,15 @@ public class FirebaseAnalytics: CAPPlugin {
     }
     
     
+    /// Initializes the firebase app. 
+    /// Param call: dismissed
+    ///
+    /// @web only. 
+    /// This is a helper method to provide common APIs accross platforms.
+    @objc func initializeFirebase(_ call: CAPPluginCall) {
+        call.success()
+    }
+    
     /// Sets the user ID property.
     /// - Parameter call: userId - unique identifier of the user to log
     @objc func setUserId(_ call: CAPPluginCall) {
@@ -118,15 +127,6 @@ public class FirebaseAnalytics: CAPPlugin {
         let duration = call.getInt("duration") ?? 1800
         
         Analytics.setSessionTimeoutInterval(TimeInterval(duration))
-    }
-
-
-    // initializeFirebase does nothing in iOS as initialization happens
-    // automatically. The method is still available to maintain a consistent
-    // api accross all platforms.
-    @objc func initializeFirebase(_ call: CAPPluginCall) {
-        print("FirebaseAnalytics: initializeFirebase noop")
-        call.success()
     }
 
     /// Deprecated - use setCollectionEnabled instead

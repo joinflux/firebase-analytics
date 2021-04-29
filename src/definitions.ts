@@ -1,3 +1,5 @@
+import firebase from "firebase";
+
 declare module "@capacitor/core" {
   interface PluginRegistry {
     FirebaseAnalytics: FirebaseAnalyticsPlugin;
@@ -5,7 +7,7 @@ declare module "@capacitor/core" {
 }
 
 export interface FirebaseAnalyticsPlugin {
-  initializeFirebase(options: FirebaseInitOptions): Promise<any>;
+  initializeFirebase(app: firebase.app.App): Promise<void>;
   setUserId(options: { userId: string }): Promise<void>;
   setUserProperty(options: { name: string; value: string }): Promise<void>;
   getAppInstanceId(): Promise<{ instanceId: string }>;
@@ -18,15 +20,4 @@ export interface FirebaseAnalyticsPlugin {
   setCollectionEnabled(options: { enabled: boolean }): Promise<void>;
   enable(): Promise<void>;
   disable(): Promise<void>;
-}
-
-export interface FirebaseInitOptions {
-  apiKey: string;
-  authDomain: string;
-  databaseURL: string;
-  projectId: string;
-  storageBucket: string;
-  messagingSenderId: string;
-  appId: string;
-  measurementId: string;
 }

@@ -1,6 +1,6 @@
 {
   "name": "@joinflux/firebase-analytics",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "A native plugin for firebase analytics.",
   "homepage": "https://github.com/joinflux/firebase-analytics",
   "main": "dist/esm/index.js",
@@ -15,7 +15,8 @@
   "author": "Priyank Patel <priyank.patel@stackspace.ca>",
   "license": "MIT",
   "dependencies": {
-    "@capacitor/core": "latest"
+    "@capacitor/core": "latest",
+    "firebase": "^8.4.1"
   },
   "devDependencies": {
     "@capacitor/android": "latest",

@@ -35,17 +35,25 @@ public class FirebaseAnalytics extends Plugin {
   }
 
   /**
+   * Initializes the firebase app.
+   * @param call: dismissed
+   *
+   * @web only.
+   *
+   * This is a helper method to provide common APIs accross platforms.
+   */
+  @PluginMethod
+  public void initializeFirebase(PluginCall call) {
+    call.success();
+  }
+
+  /**
    * Sets the user ID property.
    * @param call - userId: unique identifier of the user to log
    */
   @PluginMethod
   public void setUserId(PluginCall call) {
     try {
-      if (mFirebaseAnalytics == null) {
-        call.error(MISSING_REF_MSSG);
-        return;
-      }
-
       if (!call.hasOption("userId")) {
         call.error("userId property is missing");
         return;
@@ -66,11 +74,6 @@ public class FirebaseAnalytics extends Plugin {
   @PluginMethod
   public void setUserProperty(PluginCall call) {
     try {
-      if (mFirebaseAnalytics == null) {
-        call.error(MISSING_REF_MSSG);
-        return;
-      }
-
       if (!call.hasOption("name")) {
         call.error("name property is missing");
         return;
@@ -98,11 +101,6 @@ public class FirebaseAnalytics extends Plugin {
   @PluginMethod
   public void getAppInstanceId(PluginCall call) {
     try {
-      if (mFirebaseAnalytics == null) {
-        call.error(MISSING_REF_MSSG);
-        return;
-      }
-
       String instanceId = mFirebaseAnalytics.getAppInstanceId().toString();
 
       if (instanceId.isEmpty()) {
@@ -126,11 +124,6 @@ public class FirebaseAnalytics extends Plugin {
   @PluginMethod
   public void setScreenName(final PluginCall call) {
     try {
-      if (mFirebaseAnalytics == null) {
-        call.error(MISSING_REF_MSSG);
-        return;
-      }
-
       if (!call.hasOption("screenName")) {
         call.error("screenName property is missing");
         return;
@@ -167,11 +160,6 @@ public class FirebaseAnalytics extends Plugin {
   @PluginMethod
   public void reset(PluginCall call) {
     try {
-      if (mFirebaseAnalytics == null) {
-        call.error(MISSING_REF_MSSG);
-        return;
-      }
-
       mFirebaseAnalytics.resetAnalyticsData();
       call.success();
     } catch (Exception ex) {
@@ -187,11 +175,6 @@ public class FirebaseAnalytics extends Plugin {
   @PluginMethod
   public void logEvent(PluginCall call) {
     try {
-      if (mFirebaseAnalytics == null) {
-        call.error(MISSING_REF_MSSG);
-        return;
-      }
-
       if (!call.hasOption("name")) {
         call.error("name property is missing");
         return;
@@ -236,11 +219,6 @@ public class FirebaseAnalytics extends Plugin {
    */
   @PluginMethod
   public void setCollectionEnabled(PluginCall call) {
-    if (mFirebaseAnalytics == null) {
-      call.error(MISSING_REF_MSSG);
-      return;
-    }
-
     boolean enabled = call.getBoolean("enabled", false);
 
     mFirebaseAnalytics.setAnalyticsCollectionEnabled(enabled);
@@ -255,11 +233,6 @@ public class FirebaseAnalytics extends Plugin {
   @Deprecated
   @PluginMethod
   public void enable(PluginCall call) {
-    if (mFirebaseAnalytics == null) {
-      call.error(MISSING_REF_MSSG);
-      return;
-    }
-
     mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
     call.success();
   }
@@ -272,11 +245,6 @@ public class FirebaseAnalytics extends Plugin {
   @Deprecated
   @PluginMethod
   public void disable(PluginCall call) {
-    if (mFirebaseAnalytics == null) {
-      call.error(MISSING_REF_MSSG);
-      return;
-    }
-
     mFirebaseAnalytics.setAnalyticsCollectionEnabled(false);
     call.success();
   }
@@ -287,25 +255,9 @@ public class FirebaseAnalytics extends Plugin {
    */
   @PluginMethod
   public void setSessionTimeoutDuration(PluginCall call) {
-    if (mFirebaseAnalytics == null) {
-      call.error(MISSING_REF_MSSG);
-      return;
-    }
-
     int duration = call.getInt("duration", 1800);
 
     mFirebaseAnalytics.setSessionTimeoutDuration(duration);
-    call.success();
-  }
-
-  /**
-   * Does nothing in Android as initialization happens automatically on load.
-   * This method is only here to maintain a consistent API accross all
-   * platforms.
-   * @param call: options - duration: duration of inactivity
-   */
-  @PluginMethod
-  public void initializeFirebase(PluginCall call) {
     call.success();
   }
 }
