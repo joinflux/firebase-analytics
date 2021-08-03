@@ -78,13 +78,15 @@ public class FirebaseAnalytics: CAPPlugin {
             return
         }
         
-        let screenName = call.getString("screenName")
-        let nameOverride = call.getString("nameOverride") ?? nil
-        
-        DispatchQueue.main.async {
-            Analytics.setScreenName(screenName, screenClass: nameOverride)
+        let screenNameParam = call.getString("screenName")
+        if let screenName = screenNameParam {
+            DispatchQueue.main.async {
+                Analytics.logEvent(AnalyticsEventScreenView, parameters: [AnalyticsParameterScreenName: screenName])
+            }
+            call.success()
+        } else {
+            call.error("screenName must not be empty or undefined")
         }
-        call.success()
     }
     
     
