@@ -1,10 +1,10 @@
 import firebase from "firebase";
 
-declare module "@capacitor/core" {
-  interface PluginRegistry {
-    FirebaseAnalytics: FirebaseAnalyticsPlugin;
-  }
-}
+// declare module "@capacitor/core" {
+//   interface PluginRegistry {
+//     FirebaseAnalytics: FirebaseAnalyticsPlugin;
+//   }
+// }
 
 export interface FirebaseAnalyticsPlugin {
   initializeFirebase(app: firebase.app.App): Promise<void>;
