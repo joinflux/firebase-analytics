@@ -20,20 +20,19 @@ public class FirebaseAnalytics: CAPPlugin {
     /// @web only. 
     /// This is a helper method to provide common APIs accross platforms.
     @objc func initializeFirebase(_ call: CAPPluginCall) {
-        call.success()
+        call.resolve()
     }
     
     /// Sets the user ID property.
     /// - Parameter call: userId - unique identifier of the user to log
     @objc func setUserId(_ call: CAPPluginCall) {
-        if !call.hasOption("userId") {
-            call.error("userId property is missing")
-            return
+        guard let userId = call.getString("userId") else {
+             call.reject("userId property is missing")
+             return
         }
         
-        let userId = call.getString("userId")
         Analytics.setUserID(userId)
-        call.success()
+        call.resolve()
     }
     
     
@@ -41,21 +40,18 @@ public class FirebaseAnalytics: CAPPlugin {
     /// - Parameter call: name - The name of the user property to set.
     ///                   value - The value of the user property.
     @objc func setUserProperty(_ call: CAPPluginCall) {
-        if !call.hasOption("name") {
-            call.error("name property is missing")
+        guard let name = call.getString("name") else {
+            call.reject("name property is missing")
             return
         }
         
-        if !call.hasOption("value") {
-            call.error("value property is missing")
+        guard let value = call.getString("value") else {
+            call.reject("value property is missing")
             return
         }
-        
-        let name = call.getString("name")
-        let value = call.getString("value")
         
         Analytics.setUserProperty(value, forName: name!)
-        call.success()
+        call.resolve()
     }
     
     
@@ -63,7 +59,7 @@ public class FirebaseAnalytics: CAPPlugin {
     /// - Parameter call: instanceId - current instance if of the app
     @objc func getAppInstanceId(_ call: CAPPluginCall) {
         let instanceId = Analytics.appInstanceID()
-        call.success([
+        call.resolve([
             "instanceId": instanceId
         ])
     }
@@ -73,19 +69,13 @@ public class FirebaseAnalytics: CAPPlugin {
     /// - Parameter call: screenName - the activity to which the screen name and class name apply.
     ///                   nameOverride - the name of the current screen. Set to null to clear the current screen name.
     @objc func setScreenName(_ call: CAPPluginCall) {
-        if !call.hasOption("screenName") {
-            call.error("screenName property is missing")
-            return
-        }
-        
-        let screenNameParam = call.getString("screenName")
-        if let screenName = screenNameParam {
+        if let screenName = call.getString("screenName") {
             DispatchQueue.main.async {
                 Analytics.logEvent(AnalyticsEventScreenView, parameters: [AnalyticsParameterScreenName: screenName])
             }
-            call.success()
+            call.resolve()
         } else {
-            call.error("screenName must not be empty or undefined")
+            call.reject("screenName must not be empty or undefined")
         }
     }
     
@@ -93,7 +83,7 @@ public class FirebaseAnalytics: CAPPlugin {
     /// Clears all analytics data for this app from the device and resets the app instance id.
     @objc func reset(_ call: CAPPluginCall) {
         Analytics.resetAnalyticsData()
-        call.success()
+        call.resolve()
     }
     
     
@@ -101,25 +91,23 @@ public class FirebaseAnalytics: CAPPlugin {
     /// - Parameter call: name - unique name of the event
     ///                   params - the map of event parameters.
     @objc func logEvent(_ call: CAPPluginCall) {
-        if !call.hasOption("name") {
-            call.error("name property is missing")
-            return
+        if let name = call.getString("name") {
+            let params = call.getObject("params") ?? nil
+            
+            Analytics.logEvent(name, parameters: params)
+            call.resolve()
+        } else {
+            call.reject("name property is missing")
         }
-        
-        let name = call.getString("name")
-        let params = call.getObject("params") ?? nil
-        
-        Analytics.logEvent(name!, parameters: params)
-        call.success()
     }
     
     
     /// Sets whether analytics collection is enabled for this app on this device.
     /// - Parameter call: enabled - boolean true/false to enable/disable logging
     @objc func setCollectionEnabled(_ call: CAPPluginCall) {
-        let enabled: Bool = (call.hasOption("enabled") ? call.getBool("enabled") : false)!
-        
+        let enabled: Bool = call.getBool("enabled", false)
         Analytics.setAnalyticsCollectionEnabled(enabled)
+        call.resolve()
     }
     
     
@@ -127,8 +115,8 @@ public class FirebaseAnalytics: CAPPlugin {
     /// - Parameter call: duration - duration of inactivity
     @objc func setSessionTimeoutDuration(_ call: CAPPluginCall) {
         let duration = call.getInt("duration") ?? 1800
-        
         Analytics.setSessionTimeoutInterval(TimeInterval(duration))
+        call.resolve()
     }
 
     /// Deprecated - use setCollectionEnabled instead
@@ -137,7 +125,7 @@ public class FirebaseAnalytics: CAPPlugin {
     @available(*, deprecated, renamed: "setCollectionEnabled")
     @objc func enable(_ call: CAPPluginCall) {
         Analytics.setAnalyticsCollectionEnabled(true)
-        call.success()
+        call.resolve()
     }
   
     /// Deprecated - use setCollectionEnabled instead
@@ -146,6 +134,6 @@ public class FirebaseAnalytics: CAPPlugin {
     @available(*, deprecated, renamed: "setCollectionEnabled")
     @objc func disable(_ call: CAPPluginCall) {
         Analytics.setAnalyticsCollectionEnabled(false)
-        call.success()
+        call.resolve()
     }
 }
