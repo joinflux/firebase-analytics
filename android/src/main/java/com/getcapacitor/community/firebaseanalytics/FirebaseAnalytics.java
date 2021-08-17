@@ -3,21 +3,30 @@ package com.getcapacitor.community.firebaseanalytics;
 import android.Manifest;
 import android.os.Bundle;
 import com.getcapacitor.JSObject;
-import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
+import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.annotation.Permission;
 import java.util.Iterator;
 import org.json.JSONObject;
 
-@NativePlugin(
+@CapacitorPlugin(
+  name = "FirebaseAnalytics",
   permissions = {
-    Manifest.permission.ACCESS_NETWORK_STATE,
-    Manifest.permission.INTERNET,
-    Manifest.permission.WAKE_LOCK,
+    @Permission(
+      strings = { Manifest.permission.ACCESS_NETWORK_STATE },
+      alias = "access_network_state"
+    ),
+    @Permission(strings = { Manifest.permission.INTERNET }, alias = "internet"),
+    @Permission(
+      strings = { Manifest.permission.WAKE_LOCK },
+      alias = "wake_lock"
+    ),
   }
 )
 public class FirebaseAnalytics extends Plugin {
+
   private com.google.firebase.analytics.FirebaseAnalytics mFirebaseAnalytics;
 
   private final String MISSING_REF_MSSG =
@@ -136,7 +145,6 @@ public class FirebaseAnalytics extends Plugin {
         .getActivity()
         .runOnUiThread(
           new Runnable() {
-
             @Override
             public void run() {
               mFirebaseAnalytics.setCurrentScreen(
