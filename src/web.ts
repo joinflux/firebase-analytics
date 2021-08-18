@@ -10,10 +10,7 @@ export class FirebaseAnalyticsWeb
   private analyticsRef: firebase.analytics.Analytics;
 
   constructor() {
-    super({
-      name: "FirebaseAnalytics",
-      platforms: ["web"],
-    });
+    super();
   }
 
   async initializeFirebase(app: firebase.app.App) {
