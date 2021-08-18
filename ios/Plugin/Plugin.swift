@@ -50,7 +50,7 @@ public class FirebaseAnalytics: CAPPlugin {
             return
         }
         
-        Analytics.setUserProperty(value, forName: name!)
+        Analytics.setUserProperty(value, forName: name)
         call.resolve()
     }
     
@@ -60,7 +60,7 @@ public class FirebaseAnalytics: CAPPlugin {
     @objc func getAppInstanceId(_ call: CAPPluginCall) {
         let instanceId = Analytics.appInstanceID()
         call.resolve([
-            "instanceId": instanceId
+            "instanceId": instanceId ?? "0"
         ])
     }
     
