@@ -58,9 +58,12 @@ public class FirebaseAnalytics: CAPPlugin {
     /// Retrieves the app instance id from the service.
     /// - Parameter call: instanceId - current instance if of the app
     @objc func getAppInstanceId(_ call: CAPPluginCall) {
-        let instanceId = Analytics.appInstanceID()
+        guard let instanceId = Analytics.appInstanceID() else {
+            call.reject("failed to obtain app instance id")
+            return
+        }
         call.resolve([
-            "instanceId": instanceId ?? "0"
+            "instanceId": instanceId
         ])
     }
     
