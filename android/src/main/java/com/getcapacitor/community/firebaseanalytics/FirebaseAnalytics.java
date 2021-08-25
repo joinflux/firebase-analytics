@@ -3,21 +3,30 @@ package com.getcapacitor.community.firebaseanalytics;
 import android.Manifest;
 import android.os.Bundle;
 import com.getcapacitor.JSObject;
-import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
+import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.annotation.Permission;
 import java.util.Iterator;
 import org.json.JSONObject;
 
-@NativePlugin(
+@CapacitorPlugin(
+  name = "FirebaseAnalytics",
   permissions = {
-    Manifest.permission.ACCESS_NETWORK_STATE,
-    Manifest.permission.INTERNET,
-    Manifest.permission.WAKE_LOCK,
+    @Permission(
+      strings = { Manifest.permission.ACCESS_NETWORK_STATE },
+      alias = "access_network_state"
+    ),
+    @Permission(strings = { Manifest.permission.INTERNET }, alias = "internet"),
+    @Permission(
+      strings = { Manifest.permission.WAKE_LOCK },
+      alias = "wake_lock"
+    ),
   }
 )
 public class FirebaseAnalytics extends Plugin {
+
   private com.google.firebase.analytics.FirebaseAnalytics mFirebaseAnalytics;
 
   private final String MISSING_REF_MSSG =
@@ -44,7 +53,7 @@ public class FirebaseAnalytics extends Plugin {
    */
   @PluginMethod
   public void initializeFirebase(PluginCall call) {
-    call.success();
+    call.resolve();
   }
 
   /**
@@ -54,15 +63,16 @@ public class FirebaseAnalytics extends Plugin {
   @PluginMethod
   public void setUserId(PluginCall call) {
     try {
-      if (!call.hasOption("userId")) {
-        call.error("userId property is missing");
+      String userId = call.getString("userId");
+
+      if (userId == null) {
+        call.reject("userId property is missing");
         return;
       }
 
-      String userId = call.getString("userId");
       mFirebaseAnalytics.setUserId(userId);
     } catch (Exception ex) {
-      call.error(ex.getLocalizedMessage());
+      call.reject(ex.getLocalizedMessage());
     }
   }
 
@@ -74,23 +84,23 @@ public class FirebaseAnalytics extends Plugin {
   @PluginMethod
   public void setUserProperty(PluginCall call) {
     try {
-      if (!call.hasOption("name")) {
-        call.error("name property is missing");
-        return;
-      }
-
-      if (!call.hasOption("value")) {
-        call.error("value property is missing");
-        return;
-      }
-
       String name = call.getString("name");
       String value = call.getString("value");
 
+      if (name == null) {
+        call.reject("name property is missing");
+        return;
+      }
+
+      if (value == null) {
+        call.reject("value property is missing");
+        return;
+      }
+
       mFirebaseAnalytics.setUserProperty(name, value);
-      call.success();
+      call.resolve();
     } catch (Exception ex) {
-      call.error(ex.getLocalizedMessage());
+      call.reject(ex.getLocalizedMessage());
     }
   }
 
@@ -104,15 +114,15 @@ public class FirebaseAnalytics extends Plugin {
       String instanceId = mFirebaseAnalytics.getAppInstanceId().toString();
 
       if (instanceId.isEmpty()) {
-        call.error("failed to obtain app instance id");
+        call.reject("failed to obtain app instance id");
         return;
       }
 
       JSObject result = new JSObject();
       result.put("instanceId", instanceId);
-      call.success(result);
+      call.resolve(result);
     } catch (Exception ex) {
-      call.error(ex.getLocalizedMessage());
+      call.reject(ex.getLocalizedMessage());
     }
   }
 
@@ -124,19 +134,17 @@ public class FirebaseAnalytics extends Plugin {
   @PluginMethod
   public void setScreenName(final PluginCall call) {
     try {
-      if (!call.hasOption("screenName")) {
-        call.error("screenName property is missing");
-        return;
-      }
-
       final String screenName = call.getString("screenName");
       final String nameOverride = call.getString("nameOverride", null);
+      if (screenName == null) {
+        call.reject("screenName property is missing");
+        return;
+      }
 
       bridge
         .getActivity()
         .runOnUiThread(
           new Runnable() {
-
             @Override
             public void run() {
               mFirebaseAnalytics.setCurrentScreen(
@@ -144,12 +152,12 @@ public class FirebaseAnalytics extends Plugin {
                 screenName,
                 nameOverride
               );
-              call.success();
+              call.resolve();
             }
           }
         );
     } catch (Exception ex) {
-      call.error(ex.getLocalizedMessage());
+      call.reject(ex.getLocalizedMessage());
     }
   }
 
@@ -161,9 +169,9 @@ public class FirebaseAnalytics extends Plugin {
   public void reset(PluginCall call) {
     try {
       mFirebaseAnalytics.resetAnalyticsData();
-      call.success();
+      call.resolve();
     } catch (Exception ex) {
-      call.error(ex.getLocalizedMessage());
+      call.reject(ex.getLocalizedMessage());
     }
   }
 
@@ -175,12 +183,13 @@ public class FirebaseAnalytics extends Plugin {
   @PluginMethod
   public void logEvent(PluginCall call) {
     try {
-      if (!call.hasOption("name")) {
-        call.error("name property is missing");
+      String name = call.getString("name");
+
+      if (name == null) {
+        call.reject("name property is missing");
         return;
       }
 
-      String name = call.getString("name");
       JSObject data = call.getData();
       JSONObject params = data.getJSObject("params");
       Bundle bundle = new Bundle();
@@ -207,9 +216,9 @@ public class FirebaseAnalytics extends Plugin {
       }
 
       mFirebaseAnalytics.logEvent(name, bundle);
-      call.success();
+      call.resolve();
     } catch (Exception ex) {
-      call.error(ex.getLocalizedMessage());
+      call.reject(ex.getLocalizedMessage());
     }
   }
 
@@ -222,7 +231,7 @@ public class FirebaseAnalytics extends Plugin {
     boolean enabled = call.getBoolean("enabled", false);
 
     mFirebaseAnalytics.setAnalyticsCollectionEnabled(enabled);
-    call.success();
+    call.resolve();
   }
 
   /**
@@ -234,7 +243,7 @@ public class FirebaseAnalytics extends Plugin {
   @PluginMethod
   public void enable(PluginCall call) {
     mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
-    call.success();
+    call.resolve();
   }
 
   /**
@@ -246,7 +255,7 @@ public class FirebaseAnalytics extends Plugin {
   @PluginMethod
   public void disable(PluginCall call) {
     mFirebaseAnalytics.setAnalyticsCollectionEnabled(false);
-    call.success();
+    call.resolve();
   }
 
   /**
@@ -258,6 +267,6 @@ public class FirebaseAnalytics extends Plugin {
     int duration = call.getInt("duration", 1800);
 
     mFirebaseAnalytics.setSessionTimeoutDuration(duration);
-    call.success();
+    call.resolve();
   }
 }

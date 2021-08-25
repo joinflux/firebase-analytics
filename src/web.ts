@@ -1,17 +1,16 @@
-import { registerWebPlugin, WebPlugin } from "@capacitor/core";
+import { registerPlugin, WebPlugin } from "@capacitor/core";
 import firebase from "firebase";
 import "firebase/analytics";
-import { FirebaseAnalyticsPlugin } from "./definitions";
+import type { FirebaseAnalyticsPlugin } from "./definitions";
 
-export class FirebaseAnalyticsWeb extends WebPlugin
-  implements FirebaseAnalyticsPlugin {
+export class FirebaseAnalyticsWeb
+  extends WebPlugin
+  implements FirebaseAnalyticsPlugin
+{
   private analyticsRef: firebase.analytics.Analytics;
 
   constructor() {
-    super({
-      name: "FirebaseAnalytics",
-      platforms: ["web"],
-    });
+    super();
   }
 
   async initializeFirebase(app: firebase.app.App) {
@@ -121,8 +120,11 @@ export class FirebaseAnalyticsWeb extends WebPlugin
   }
 }
 
-const FirebaseAnalytics = new FirebaseAnalyticsWeb();
+const FirebaseAnalytics = registerPlugin<FirebaseAnalyticsWeb>(
+  "FirebaseAnalytics",
+  {
+    web: () => new FirebaseAnalyticsWeb(),
+  }
+);
 
 export { FirebaseAnalytics };
-
-registerWebPlugin(FirebaseAnalytics);
